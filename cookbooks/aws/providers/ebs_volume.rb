@@ -23,14 +23,14 @@ action :create do
       compatible = volume_compatible_with_resource_definition?(attached_volume)
       raise "Volume #{attached_volume[:aws_id]} attached at #{attached_volume[:aws_device]} but does not conform to this resource's specifications" unless compatible
       Chef::Log.debug("The volume matches the resource's definition, so the volume is assumed to be already created")
-      node.set[:aws][:ebs_volume][new_resource.name][:volume_id] = attached_volume[:aws_id]
+      node.set['aws']['ebs_volume'][new_resource.name]['volume_id'] = attached_volume[:aws_id]
     else
       # If not, create volume and register its id in the node data
       nvid = create_volume(new_resource.snapshot_id, new_resource.size, new_resource.availability_zone, new_resource.timeout)
-      node.set[:aws][:ebs_volume][new_resource.name][:volume_id] = nvid
+      node.set['aws']['ebs_volume'][new_resource.name]['volume_id'] = nvid
       new_resource.updated_by_last_action(true)
     end
-    save_node()
+    node.save unless Chef::Config[:solo]
   end
 end
 
@@ -46,8 +46,8 @@ action :attach do
   else
     # attach the volume and register its id in the node data
     attach_volume(vol[:aws_id], instance_id, new_resource.device, new_resource.timeout)
-    node.set[:aws][:ebs_volume][new_resource.name][:volume_id] = vol[:aws_id]
-    save_node()
+    node.set['aws']['ebs_volume'][new_resource.name]['volume_id'] = vol['aws_id']
+    node.save unless Chef::Config[:solo]
     new_resource.updated_by_last_action(true)
   end
 end
@@ -61,7 +61,7 @@ end
 
 action :snapshot do
   vol = determine_volume
-  snapshot = ec2.create_snapshot(vol[:aws_id])
+  snapshot = ec2.create_snapshot(vol[:aws_id],new_resource.description)
   new_resource.updated_by_last_action(true)
   Chef::Log.info("Created snapshot of #{vol[:aws_id]} as #{snapshot[:aws_id]}")
 end
@@ -76,8 +76,8 @@ action :prune do
       old_snapshots << snapshot
     end 
   end
-  if old_snapshots.length >= new_resource.snapshots_to_keep 
-    old_snapshots[new_resource.snapshots_to_keep - 1, old_snapshots.length].each do |die|
+  if old_snapshots.length > new_resource.snapshots_to_keep 
+    old_snapshots[new_resource.snapshots_to_keep, old_snapshots.length].each do |die|
       Chef::Log.info "Deleting old snapshot #{die[:aws_id]}"
       ec2.delete_snapshot(die[:aws_id])
       new_resource.updated_by_last_action(true)
@@ -89,7 +89,7 @@ private
 
 def volume_id_in_node_data
   begin
-    node[:aws][:ebs_volume][new_resource.name][:volume_id]
+    node['aws']['ebs_volume'][new_resource.name]['volume_id']
   rescue NoMethodError => e
     nil
   end
@@ -97,8 +97,9 @@ end
 
 # Pulls the volume id from the volume_id attribute or the node data and verifies that the volume actually exists
 def determine_volume
-  vol_id = new_resource.volume_id || volume_id_in_node_data || currently_attached_volume(instance_id, new_resource.device)
-  raise "volume_id attribute not set and no volume id is set in the node data for this resource (which is populated by action :create)" unless vol_id
+  vol = currently_attached_volume(instance_id, new_resource.device)
+  vol_id = new_resource.volume_id || volume_id_in_node_data || ( vol ? vol[:aws_id] : nil )
+  raise "volume_id attribute not set and no volume id is set in the node data for this resource (which is populated by action :create) and no volume is attached at the device" unless vol_id
 
   # check that volume exists
   vol = volume_by_id(vol_id)
@@ -218,20 +219,5 @@ def detach_volume(volume_id, timeout)
     end
   rescue Timeout::Error
     raise "Timed out waiting for volume detachment after #{timeout} seconds"
-  end
-end
-
-def save_node()
-  current_version = Chef::VERSION
-  node_save_safe_version = '0.8'
-  
-  if current_version >= node_save_safe_version
-    if !Chef::Config.solo
-      node.save
-    else
-      Chef::Log.warn("Skipping node save since we are running under chef-solo.  Node attributes will not be persisted.")
-    end
-  else
-    Chef::Log.warn("Skipping node save because saving a node in a recipe prior to version #{node_save_safe_version.to_s} isn't valid");
   end
 end
