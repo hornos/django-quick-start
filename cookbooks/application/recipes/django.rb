@@ -110,10 +110,6 @@ if app["database_master_role"]
   else
   # Find the database master
     results = search(:node, "role:#{app["database_master_role"][0]} AND chef_environment:#{node.chef_environment}", nil, 0, 1)
-
-    # p app["database_master_role"][0]
-    # p node.chef_environment
-
     rows = results[0]
     if rows.length == 1
       dbm = rows[0]
