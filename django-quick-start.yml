@@ -1,0 +1,13 @@
+---
+cookbooks:
+- apt
+- git
+- application
+- database
+- haproxy
+- django_cms
+roles:
+- base
+- django_cms_database_master
+- django_cms
+- django_cms_load_balancer

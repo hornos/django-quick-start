@@ -124,8 +124,13 @@ def current_installed_version
       delimeter = /\s/
       version_check_cmd = "pip --version"
     end
-    p = shell_out!(version_check_cmd)
-    p.stdout.split(delimeter)[1].strip
+# http://tickets.opscode.com/browse/COOK-1320
+#    p = shell_out!(version_check_cmd)
+#    p.stdout.split(delimeter)[1].strip
+    p = shell_out(version_check_cmd)
+    unless p.stdout.split(delimeter).count < 2
+      p.stdout.split(delimeter)[1].strip
+    end
   rescue Chef::Exceptions::ShellCommandFailed
   end
 end

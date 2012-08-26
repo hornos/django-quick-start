@@ -1,0 +1,7 @@
+{
+  "app1" : {"ipaddress": "10.10.10.11"} , 
+  "role":"django_cms",
+  "fqdn":"app1",
+  "chef_environment":"_default"
+}
+

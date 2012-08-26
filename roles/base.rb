@@ -11,7 +11,7 @@ run_list(
 override_attributes(
   :authorization => {
     :sudo => {
-      :users => ["ubuntu"],
+      :users => ["ubuntu","vagrant"],
       :passwordless => true
     }
   }

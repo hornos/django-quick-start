@@ -53,6 +53,11 @@ directory "#{::File.join(app['deploy_to'], "current")}/media" do
 end
 
 template "#{::File.join(app['deploy_to'], "current")}/media/status.html" do
+#  if not node[:instance_role].nil? then
+#    source "vagrant_status.html.erb"
+#  else
+#    source "status.html.erb"
+#  end
   source "status.html.erb"
   owner app["owner"]
   group app["group"]
