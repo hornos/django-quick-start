@@ -1,25 +1,35 @@
-= DESCRIPTION:
+Description
+===========
 
-Installs git.
+Installs git and optionally sets up a git server as a daemon under runit.
 
-= REQUIREMENTS:
+Requirements
+============
 
-== Cookbooks:
+## Platform:
 
-Opscode Cookbooks (http://github.com/opscode/cookbooks/tree/master)
+* Debian/Ubuntu
+* ArchLinux
+
+## Cookbooks:
 
 * runit
 
-= USAGE:
+Usage
+=====
 
-This cookbook primarily installs git core packages. It can also be used to serve git repositories.
+This cookbook primarily installs git core packages. It can also be
+used to serve git repositories.
 
-  include_recipe "git::server"
+    include_recipe "git::server"
 
-This creates the directory /srv/git and starts a git daemon, exporting all repositories found. Repositories need to be added manually, but will be available once they are created.
+This creates the directory /srv/git and starts a git daemon, exporting
+all repositories found. Repositories need to be added manually, but
+will be available once they are created.
 
-= LICENSE and AUTHOR:
-      
+License and Author
+==================
+
 Author:: Joshua Timberman (<joshua@opscode.com>)
 
 Copyright:: 2009, Opscode, Inc
