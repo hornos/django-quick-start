@@ -19,11 +19,11 @@
 
 version = node['java']['jdk_version']
 java_home = node['java']['java_home']
-java_home_parent = File.dirname java_home
+java_home_parent = ::File.dirname java_home
 jdk_home = ""
 
 pkgs = value_for_platform(
-  ["centos","redhat","fedora"] => {
+  ["centos","redhat","fedora","scientific","amazon"] => {
     "default" => ["java-1.#{version}.0-openjdk","java-1.#{version}.0-openjdk-devel"]
   },
   ["arch","freebsd"] => {
@@ -53,11 +53,12 @@ if platform?("ubuntu","debian","redhat","centos","fedora","scientific","amazon")
         # not currently set jdk 7 as the default jvm on installation
         require "fileutils"
         arch = node['kernel']['machine'] =~ /x86_64/ ? "x86_64" : "i386"
+        arch = 'amd64' if arch == 'x86_64' && node["platform_version"].to_f >= 12.04
         Chef::Log.debug("glob is #{java_home_parent}/java*#{version}*openjdk*")
         jdk_home = Dir.glob("#{java_home_parent}/java*#{version}*openjdk{,[-\.]#{arch}}")[0]
         Chef::Log.debug("jdk_home is #{jdk_home}")
         # delete the symlink if it already exists
-        if File.exists? java_home
+        if ::File.exists? java_home
           FileUtils.rm_f java_home
         end
         FileUtils.ln_sf jdk_home, java_home
