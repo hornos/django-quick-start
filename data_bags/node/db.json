@@ -1,7 +1,0 @@
-{
-  "db" : {"ipaddress": "10.10.10.10"},
-  "fqdn": "db",
-  "role":"django_cms_database_master",
-  "chef_environment":"_default"
-}
-

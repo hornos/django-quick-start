@@ -26,6 +26,12 @@ node.set_unless['mysql']['server_debian_password'] = secure_password
 node.set_unless['mysql']['server_root_password']   = secure_password
 node.set_unless['mysql']['server_repl_password']   = secure_password
 
+# vagrant ohai workaround
+if node.has_key? :instance_role then
+  node['mysql']['bind_address'] = node['ipaddress'] if node[:instance_role] == 'vagrant'
+  puts "VAGRANT MYSQL IP: #{node[:mysql][:bind_address]}"
+end
+
 if platform?(%w{debian ubuntu})
 
   directory "/var/cache/local/preseeding" do
