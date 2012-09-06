@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-puts "NODE IP: #{node['ipaddress'].inspect}"
+puts "[#{__FILE__}] IPADDRESS: #{node['ipaddress']}"
 
 default['mysql']['bind_address']               = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress
 default['mysql']['port']                       = 3306
