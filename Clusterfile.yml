@@ -50,20 +50,20 @@
       - - 8080
         - 58080
 
-  :app1:
-    :cpus: 1
-    :hostonly: 10.10.10.12
-    :chef_client: dev
-    :roles:
-      - recipe[ohai] # ipaddress
-      - role[cluster]
-      - role[base]
-
-  :app2:
-    :cpus: 1
-    :hostonly: 10.10.10.13
-    :chef_client: dev
-    :roles:
-      - recipe[ohai] # ipaddress
-      - role[cluster]
-      - role[base]
+#  :app1:
+#    :cpus: 1
+#    :hostonly: 10.10.10.12
+#    :chef_client: dev
+#    :roles:
+#      - recipe[ohai] # ipaddress
+#      - role[cluster]
+#      - role[base]
+#
+#  :app2:
+#    :cpus: 1
+#    :hostonly: 10.10.10.13
+#    :chef_client: dev
+#    :roles:
+#      - recipe[ohai] # ipaddress
+#      - role[cluster]
+#      - role[base]
