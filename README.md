@@ -1,10 +1,21 @@
 The original guide is extended with Vagrant cluster boot and with updated Ubunut.
 
-### Usage
+### Usage (1 node)
 * gem install noc
 * noc upload books
 * noc upload roles
 * noc upload bags apps
+* noc upload cluster
+* mv Clusterfile.yml Clusterfile.cluster
+* cp Clusterfile.1node Clusterfile.yml
+* vagrant up db
+
+### Usage (4 nodes)
+* gem install noc
+* noc upload books
+* noc upload roles
+* noc upload bags apps
+* noc upload cluster
 * vagrant up
 
 This guide describes how to build a [Django](http://www.djangoproject.com/) application stack using Chef cookbooks available from the [Cookbooks Community Site](http://cookbooks.opscode.com) and the Opscode Platform. It assumes you followed the [Getting Started Guide](/faqs/start/how-to-get-started) and have Chef installed.

@@ -61,6 +61,7 @@ template "/etc/haproxy/haproxy.cfg" do
   owner "root"
   group "root"
   mode 0644
+  puts "HAPROXY POOL: #{pool_members.inspect}"
   variables :pool_members => pool_members.uniq
   notifies :restart, "service[haproxy]"
 end

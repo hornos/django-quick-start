@@ -34,58 +34,19 @@
   :db:
     :cpus: 1
     :hostonly: 10.10.10.11
-    :alias: loghost admin rabbit
+    :alias: loghost admin
     :chef_client: _default
     :roles:
       - recipe[ohai] # ipaddress
       - role[cluster]
-      - role[cluster_server]
       - role[base]
-      - role[rabbitmq]
       - role[django_cms_database_master]
-#      - role[django_cms]
-#      - recipe[django_cms::db_bootstrap]
-#      - role[django_cms_load_balancer]
- 
-  :app1:
-    :cpus: 1
-    :hostonly: 10.10.10.12
-    :chef_client: _default
-    :roles:
-      - recipe[ohai] # ipaddress
-      - role[cluster]
-      - role[cluster_client]
-      - role[base]
       - role[django_cms]
       - recipe[django_cms::db_bootstrap]
-    :forward:
-      - - 8080
-        - 18080
-
-  :app2:
-    :cpus: 1
-    :hostonly: 10.10.10.13
-    :chef_client: _default
-    :roles:
-      - recipe[ohai] # ipaddress
-      - role[cluster]
-      - role[cluster_client]
-      - role[base]
-      - role[django_cms]
-    :forward:
-      - - 8080
-        - 28080
-
-  :ha:
-    :cpus: 1
-    :hostonly: 10.10.10.14
-    :chef_client: _default
-    :roles:
-      - recipe[ohai] # ipaddress
-      - role[cluster]
-      - role[cluster_client]
-      - role[base]
       - role[django_cms_load_balancer]
     :forward:
       - - 80
-        - 8080
+        - 5080
+      - - 8080
+        - 58080
+
